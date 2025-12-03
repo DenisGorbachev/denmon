@@ -5,20 +5,20 @@ use fmt_derive::Display;
 
 #[derive(Parser, Clone, Debug)]
 pub enum Command {
-    Print(CheckTetherSupplyCommand),
+    CheckTetherSupply(CheckTetherSupplyCommand),
 }
 
 impl Command {
     pub async fn run(self) -> Result<(), CommandRunError> {
         match self {
-            Print(command) => command.run().await.map_err(From::from),
+            CheckTetherSupply(command) => command.run().await.map_err(From::from),
         }
     }
 }
 
 #[derive(Error, Display, From, Debug)]
 pub enum CommandRunError {
-    PrintCommandRunFailed { source: CheckTetherSupplyCommandRunError },
+    CheckTetherSupplyCommandRunFailed { source: CheckTetherSupplyCommandRunError },
 }
 
 mod check_tether_supply_command;
