@@ -19,6 +19,6 @@ jobs:
 
       - run: cargo build --release --locked
 
-      - run: ./target/release/denmon check-tether-supply --supply-min 200000000000
+      - run: ./target/release/denmon check-tether-supply --supply-min 180000000000
         env:
           DENMON_NTFY_TOPIC: ${{ secrets.DENMON_NTFY_TOPIC }}
