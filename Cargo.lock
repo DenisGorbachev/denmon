@@ -268,6 +268,7 @@ dependencies = [
  "fmt-derive",
  "helpful",
  "ntfy",
+ "numfmt",
  "reqwest",
  "serde",
  "serde_json",
@@ -372,6 +373,12 @@ checksum = "d4b8a88685455ed29a21542a33abd9cb6510b6b129abadabdcef0f4c55bc8f61"
 dependencies = [
  "litrs",
 ]
+
+[[package]]
+name = "dtoa"
+version = "1.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d6add3b8cff394282be81f3fc1a0605db594ed69890078ca6e2cab1c408bcf04"
 
 [[package]]
 name = "equivalent"
@@ -852,6 +859,16 @@ name = "num-conv"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
+
+[[package]]
+name = "numfmt"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ea1a14c0c3b00c5b3f3ab9625c35601c5cac06a94bb6b17c27327a8f1d520c6"
+dependencies = [
+ "dtoa",
+ "itoa",
+]
 
 [[package]]
 name = "object"

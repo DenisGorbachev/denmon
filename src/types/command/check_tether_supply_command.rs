@@ -2,6 +2,7 @@ use clap::Parser;
 use derive_more::Error;
 use fmt_derive::Display;
 use ntfy::{Payload, dispatcher};
+use numfmt::Precision;
 use reqwest::StatusCode;
 use serde::Deserialize;
 use serde_json::Value;
@@ -42,7 +43,9 @@ impl CheckTetherSupplyCommand {
         } = self;
 
         let supply = fetch_usdt_supply().await?;
-        eprintln!("Current supply: {supply}");
+        let mut formatter = regular_formatter();
+        let supply_formatted = formatter.fmt2(supply);
+        eprintln!("Current supply: {supply_formatted}");
 
         if supply < supply_min {
             eprintln!("Sending notification");
@@ -51,7 +54,7 @@ impl CheckTetherSupplyCommand {
             });
             let payload = Payload::new(ntfy_topic)
                 .title("USDT supply decreased")
-                .message(format!("* Current supply: {supply}"))
+                .message(format!("Current supply: {supply_formatted}"))
                 .markdown(true)
                 .tags(["warning"])
                 .click(url!("https://studio.glassnode.com/charts/supply.Current?a=USDT&category=Supply"));
@@ -194,4 +197,11 @@ fn ensure_finite(value: f64) -> Result<f64, SupplyValueParseError> {
             value,
         })
     }
+}
+
+fn regular_formatter() -> numfmt::Formatter {
+    numfmt::Formatter::new()
+        .separator(',')
+        .unwrap()
+        .precision(Precision::Decimals(0))
 }
