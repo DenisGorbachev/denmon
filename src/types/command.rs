@@ -5,7 +5,7 @@ use fmt_derive::Display;
 
 #[derive(Parser, Clone, Debug)]
 pub enum Command {
-    Print(PrintCommand),
+    Print(CheckTetherSupplyCommand),
 }
 
 impl Command {
@@ -18,9 +18,9 @@ impl Command {
 
 #[derive(Error, Display, From, Debug)]
 pub enum CommandRunError {
-    PrintCommandRunFailed { source: PrintCommandRunError },
+    PrintCommandRunFailed { source: CheckTetherSupplyCommandRunError },
 }
 
-mod print_command;
+mod check_tether_supply_command;
 
-pub use print_command::*;
+pub use check_tether_supply_command::*;
