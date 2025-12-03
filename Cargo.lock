@@ -144,6 +144,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "denmon"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "derive-getters",
+ "derive-new",
+ "derive_more 2.0.1",
+ "fmt-derive",
+ "helpful",
+ "standard-traits",
+ "strum",
+ "stub-macro",
+ "subtype",
+ "tokio",
+]
+
+[[package]]
 name = "derive-getters"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -391,23 +408,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "rust-pre-public-cli-template"
-version = "0.1.0"
-dependencies = [
- "clap",
- "derive-getters",
- "derive-new",
- "derive_more 2.0.1",
- "fmt-derive",
- "helpful",
- "standard-traits",
- "strum",
- "stub-macro",
- "subtype",
- "tokio",
 ]
 
 [[package]]
