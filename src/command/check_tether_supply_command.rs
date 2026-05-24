@@ -1,5 +1,6 @@
 use clap::Parser;
 use derive_more::Error;
+use errgonomic::handle;
 use fmt_derive::Display;
 use ntfy::{Payload, dispatcher};
 use numfmt::Precision;
@@ -11,18 +12,6 @@ use std::num::ParseFloatError;
 use url_macro::url;
 
 const TRANSPARENCY_URL: &str = "https://app.tether.to/transparency.json";
-
-// TODO: Remove this macro in favor of error_handling::handle
-macro_rules! handle {
-    ($expr:expr, $map:expr) => {{
-        match $expr {
-            Ok(value) => value,
-            Err(source) => {
-                return Err($map(source));
-            }
-        }
-    }};
-}
 
 #[derive(Parser, Clone, Debug)]
 pub struct CheckTetherSupplyCommand {
@@ -49,18 +38,14 @@ impl CheckTetherSupplyCommand {
 
         if supply < supply_min {
             eprintln!("Sending notification");
-            let dispatcher = handle!(dispatcher::builder("https://ntfy.sh").build_async(), |source| BuildDispatcherFailed {
-                source
-            });
+            let dispatcher = handle!(dispatcher::builder("https://ntfy.sh").build_async(), BuildDispatcherFailed);
             let payload = Payload::new(ntfy_topic)
                 .title("USDT supply decreased")
                 .message(format!("Current supply: {supply_formatted}"))
                 .markdown(true)
                 .tags(["warning"])
                 .click(url!("https://studio.glassnode.com/charts/supply.Current?a=USDT&category=Supply"));
-            handle!(dispatcher.send(&payload).await, |source| SendNotificationFailed {
-                source
-            });
+            handle!(dispatcher.send(&payload).await, SendNotificationFailed);
         }
         Ok(())
     }
@@ -109,9 +94,7 @@ struct TransparencyData {
 pub async fn fetch_usdt_supply() -> Result<f64, CheckTetherSupplyCommandRunError> {
     use CheckTetherSupplyCommandRunError::*;
 
-    let response = handle!(reqwest::get(TRANSPARENCY_URL).await, |source| FetchTransparencyFailed {
-        source
-    });
+    let response = handle!(reqwest::get(TRANSPARENCY_URL).await, FetchTransparencyFailed);
 
     let status = response.status();
     if !status.is_success() {
@@ -120,13 +103,9 @@ pub async fn fetch_usdt_supply() -> Result<f64, CheckTetherSupplyCommandRunError
         });
     }
 
-    let body = handle!(response.text().await, |source| FetchTransparencyFailed {
-        source
-    });
+    let body = handle!(response.text().await, FetchTransparencyFailed);
 
-    let payload: TransparencyResponse = handle!(serde_json::from_str(&body), |source| ParseTransparencyFailed {
-        source
-    });
+    let payload: TransparencyResponse = handle!(serde_json::from_str(&body), ParseTransparencyFailed);
 
     calculate_usdt_supply(&payload.data.usdt)
 }
@@ -143,10 +122,7 @@ fn calculate_usdt_supply(usdt: &HashMap<String, Value>) -> Result<f64, CheckTeth
         }
 
         seen = true;
-        let numeric = handle!(value_to_f64(value), |source| InvalidSupplyValue {
-            key: key.clone(),
-            source,
-        });
+        let numeric = handle!(value_to_f64(value), InvalidSupplyValue, key: key.clone());
         total += numeric;
     }
 
@@ -168,10 +144,8 @@ fn value_to_f64(value: &Value) -> Result<f64, SupplyValueParseError> {
             ensure_finite(numeric)
         }
         Value::String(text) => {
-            let numeric = handle!(text.parse::<f64>(), |source| SupplyValueParseError::InvalidString {
-                value: text.clone(),
-                source,
-            });
+            use SupplyValueParseError::*;
+            let numeric = handle!(text.parse::<f64>(), InvalidString, value: text.clone());
             ensure_finite(numeric)
         }
         Value::Bool(_) => Err(SupplyValueParseError::UnsupportedType {
