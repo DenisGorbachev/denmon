@@ -64,7 +64,7 @@ workspace = true
 [dependencies]
 clap = { version = "4.5.11", features = ["derive", "env"] }
 derive_more = { version = "2.0.1", features = ["full"] }
-errgonomic = "0.5.1"
+errgonomic = "0.5.3"
 fmt-derive = "0.1.2"
 ntfy = { version = "0.8.0" }
 numfmt = "1.2.0"
