@@ -1649,7 +1649,7 @@ numfmt = "1.2.0"
 reqwest = { version = "0.12.24", default-features = false, features = ["json", "gzip", "rustls-tls-webpki-roots"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-thiserror = "2.0.17"
+thiserror = "2.0.21"
 tokio = { version = "1.39.2", features = ["macros", "fs", "net", "rt", "rt-multi-thread"] }
 url = "2.5.7"
 url-macro = "0.2.0"
